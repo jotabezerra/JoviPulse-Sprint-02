@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>JoviPulse</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<div class="carcaca-telefone">
+
+  <!-- PAINEL DE NOTIFICAÇÕES (global) -->
+  <div id="painel-notificacoes" class="notif-painel">
+    <div class="notif-cabecalho">
+      <span>Notificações</span>
+      <button onclick="fecharNotificacoes()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="notif-lista">
+      <div class="notif-item nao-lida" onclick="abrirEvento(1);fecharNotificacoes()">
+        <img class="notif-avatar" src="https://i.pravatar.cc/40?img=12" alt="">
+        <div class="notif-corpo">
+          <p><strong>lucasvaz</strong> curtiu sua foto no evento <strong>Festa na Vila</strong></p>
+          <span class="notif-tempo">2 min atrás</span>
+        </div>
+        <i class="bi bi-heart-fill notif-tipo" style="color:var(--perigo);"></i>
+      </div>
+      <div class="notif-item nao-lida" onclick="abrirEvento(1);fecharNotificacoes()">
+        <img class="notif-avatar" src="https://i.pravatar.cc/40?img=22" alt="">
+        <div class="notif-corpo">
+          <p><strong>biafernandes</strong> comentou: "Amei cada segundo! 💜"</p>
+          <span class="notif-tempo">5 min atrás</span>
+        </div>
+        <i class="bi bi-chat-dots-fill notif-tipo" style="color:var(--roxo-claro);"></i>
+      </div>
+      <div class="notif-item nao-lida" onclick="irPara('tela-inicio');fecharNotificacoes()">
+        <img class="notif-avatar" src="assets/images/festa-na-vila.jpg" alt="">
+        <div class="notif-corpo">
+          <p>Novo evento próximo: <strong>Vibes São Paulo</strong> — Liberdade</p>
+          <span class="notif-tempo">10 min atrás</span>
+        </div>
+        <i class="bi bi-geo-alt-fill notif-tipo" style="color:var(--laranja-vivo);"></i>
+      </div>
+      <div class="notif-item" onclick="abrirEvento(1);fecharNotificacoes()">
+        <img class="notif-avatar" src="https://i.pravatar.cc/40?img=33" alt="">
+        <div class="notif-corpo">
+          <p><strong>gabrielrocha</strong> te mencionou em um comentário</p>
+          <span class="notif-tempo">15 min atrás</span>
+        </div>
+        <i class="bi bi-at notif-tipo" style="color:var(--roxo-claro);"></i>
+      </div>
+      <div class="notif-item" onclick="mostrarAviso('Evento publicado com sucesso!')">
+        <img class="notif-avatar" src="assets/images/noite-inesquecivel.jpg" alt="">
+        <div class="notif-corpo">
+          <p>Sua foto no <strong>Noite Inesquecível</strong> atingiu 500 curtidas!</p>
+          <span class="notif-tempo">1h atrás</span>
+        </div>
+        <i class="bi bi-trophy-fill notif-tipo" style="color:var(--ouro);"></i>
+      </div>
+    </div>
+    <div class="notif-rodape">
+      <button onclick="mostrarAviso('Todas as notificações marcadas como lidas!')">Marcar todas como lidas</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: LOGIN
+  ══════════════════════════════ -->
+  <div id="tela-login" class="tela ativa">
+    <div class="destaque-login">
+      <img src="assets/images/login-bg.jpg" alt="Evento" />
+      <div class="destaque-login-sobreposicao">
+        <div class="destaque-login-logo">
+          <span class="logo-jovi">JOVI</span><span class="logo-pulse">PULSE</span>
+          <svg class="logo-ecg" viewBox="0 0 40 20" fill="none">
+            <polyline points="0,10 6,10 9,4 12,16 15,8 18,12 22,10 40,10" stroke="#9D6EF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="destaque-login-sub">Conecte-se aos melhores eventos,<br>compartilhe momentos incríveis.</p>
+      </div>
+    </div>
+
+    <div class="formulario-login">
+      <h2>Entrar</h2>
+      <p>Faça login para continuar</p>
+
+      <label class="rotulo-campo">E-mail</label>
+      <div class="campo-entrada">
+        <i class="bi bi-envelope icone-campo"></i>
+        <input type="email" placeholder="seu@email.com" />
+      </div>
+
+      <label class="rotulo-campo" style="display:flex;justify-content:space-between;align-items:center;">
+        Senha
+        <button class="link-esqueci" style="position:static;" onclick="mostrarAviso('Link enviado para seu e-mail!')">Esqueci minha senha</button>
+      </label>
+      <div class="campo-entrada">
+        <i class="bi bi-lock icone-campo"></i>
+        <input type="password" id="entrada-senha" placeholder="Digite sua senha" />
+        <button class="olho-campo" onclick="alternarSenha()"><i class="bi bi-eye" id="icone-olho"></i></button>
+      </div>
+
+      <button class="btn-primario" onclick="irPara('tela-inicio')" style="margin-bottom:14px;">Entrar</button>
+
+      <div class="divisor-ou">ou continue com</div>
+
+      <div class="btns-sociais">
+        <button class="btn-rede-social" onclick="irPara('tela-inicio')">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"> Google
+        </button>
+        <button class="btn-rede-social" onclick="irPara('tela-inicio')">
+          <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook"> Facebook
+        </button>
+      </div>
+
+      <p class="rodape-login">Ainda não tem uma conta? <button onclick="mostrarAviso('Cadastro em breve!')">Criar conta</button></p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: INÍCIO
+  ══════════════════════════════ -->
+  <div id="tela-inicio" class="tela">
+    <div class="barra-topo">
+      <div class="barra-topo-logo" onclick="irPara('tela-inicio')" style="cursor:pointer;">
+        <span class="logo-text"><span class="logo-jovi">JOVI</span><span class="logo-pulse">PULSE</span></span>
+        <svg class="logo-ecg" viewBox="0 0 40 20" fill="none">
+          <polyline points="0,10 6,10 9,4 12,16 15,8 18,12 22,10 40,10" stroke="#9D6EF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="barra-topo-acoes">
+        <button class="btn-icone btn-notif" onclick="alternarNotificacoes(event)">
+          <i class="bi bi-bell" style="font-size:20px;"></i>
+          <span class="ponto-badge"></span>
+        </button>
+        <div class="chip-usuario">
+          <img src="https://i.pravatar.cc/60?img=47" alt="Mariana" />
+          <span>Mariana</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+      </div>
+    </div>
+
+    <div id="mapa-principal"></div>
+
+    <div class="corpo-tela corpo-inicio">
+      <div class="barra-localizacao">
+        <div class="info-localizacao">
+          <i class="bi bi-geo-alt-fill texto-roxo"></i>
+          <div>
+            <div class="rotulo-localizacao">Sua localização</div>
+            <div class="valor-localizacao">São Paulo, SP</div>
+          </div>
+        </div>
+        <button class="btn-icone"><i class="bi bi-arrows-fullscreen" style="font-size:16px;color:var(--texto-secundario);"></i></button>
+      </div>
+
+      <div class="abas-filtro">
+        <button class="aba-filtro ativa" data-filtro="em-alta" onclick="definirFiltro(this)"><i class="bi bi-fire"></i> Em alta</button>
+        <button class="aba-filtro" data-filtro="perto" onclick="definirFiltro(this)"><i class="bi bi-geo"></i> Perto de você</button>
+        <button class="aba-filtro" data-filtro="lineup" onclick="definirFiltro(this)"><i class="bi bi-music-note-list"></i> Line-up</button>
+      </div>
+
+      <!-- Conteúdo: Em alta -->
+      <div id="conteudo-em-alta">
+        <div class="cartao-ao-vivo" onclick="abrirEvento(1)">
+          <img src="assets/images/festa-na-vila.jpg" alt="Evento ao vivo" />
+          <div class="cartao-ao-vivo-sobreposicao">
+            <div class="cartao-ao-vivo-topo">
+              <button class="btn-favorito"><i class="bi bi-bookmark"></i></button>
+            </div>
+            <div class="cartao-ao-vivo-base">
+              <div class="badge-ao-vivo" style="margin-bottom:4px;">EVENTO AO VIVO</div>
+              <div class="cartao-ao-vivo-titulo">Festa na Vila</div>
+              <div class="cartao-ao-vivo-sub"><i class="bi bi-geo-alt-fill" style="font-size:10px;"></i> Bela Vista, São Paulo</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cabecalho-secao">
+          <h3>Em destaque agora</h3>
+          <span onclick="irPara('tela-selecionar-evento')">Ver todos</span>
+        </div>
+
+        <div class="lista-eventos" style="padding:0 12px;">
+          <div class="item-evento" onclick="abrirEvento(1)">
+            <div class="rank-evento ouro">1</div>
+            <img class="miniatura-evento" src="assets/images/festa-na-vila.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Festa na Vila</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Bela Vista, SP</div>
+              <div class="meta-evento"><i class="bi bi-broadcast"></i> AO VIVO · AGORA</div>
+            </div>
+          </div>
+          <div class="item-evento" onclick="abrirEvento(2)">
+            <div class="rank-evento prata">2</div>
+            <img class="miniatura-evento" src="assets/images/noite-inesquecivel.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Noite Inesquecível</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Consolação, SP</div>
+              <div class="meta-evento"><i class="bi bi-broadcast"></i> AO VIVO · AGORA</div>
+            </div>
+          </div>
+          <div class="item-evento" onclick="abrirEvento(3)">
+            <div class="rank-evento bronze">3</div>
+            <img class="miniatura-evento" src="assets/images/vibes-sp.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Vibes São Paulo</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Liberdade, SP</div>
+              <div class="meta-evento"><i class="bi bi-clock"></i> Em breve</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conteúdo: Perto de você -->
+      <div id="conteudo-perto" style="display:none;">
+        <div class="cabecalho-secao" style="padding-top:12px;">
+          <h3>Perto de você</h3>
+          <span onclick="irPara('tela-selecionar-evento')">Ver todos</span>
+        </div>
+        <div class="lista-eventos" style="padding:0 12px;">
+          <div class="item-evento" onclick="abrirEvento(1)">
+            <img class="miniatura-evento" src="assets/images/festa-na-vila.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Festa na Vila</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Bela Vista, SP</div>
+              <div class="meta-evento"><i class="bi bi-broadcast"></i> AO VIVO · AGORA</div>
+            </div>
+            <span class="distancia-badge">200m</span>
+          </div>
+          <div class="item-evento" onclick="abrirEvento(2)">
+            <img class="miniatura-evento" src="assets/images/noite-inesquecivel.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Noite Inesquecível</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Consolação, SP</div>
+              <div class="meta-evento"><i class="bi bi-broadcast"></i> AO VIVO · AGORA</div>
+            </div>
+            <span class="distancia-badge">800m</span>
+          </div>
+          <div class="item-evento" onclick="abrirEvento(3)">
+            <img class="miniatura-evento" src="assets/images/vibes-sp.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Vibes São Paulo</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Liberdade, SP</div>
+              <div class="meta-evento"><i class="bi bi-clock"></i> Em breve</div>
+            </div>
+            <span class="distancia-badge">1,2 km</span>
+          </div>
+          <div class="item-evento" onclick="abrirEvento(4)">
+            <img class="miniatura-evento" src="assets/images/electro-night.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Electro Night</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Sé, SP</div>
+              <div class="meta-evento"><i class="bi bi-clock"></i> Em breve</div>
+            </div>
+            <span class="distancia-badge">2,1 km</span>
+          </div>
+          <div class="item-evento" onclick="abrirEvento(5)">
+            <img class="miniatura-evento" src="assets/images/sunset-vibes.jpg" alt="">
+            <div class="info-evento">
+              <div class="nome-evento">Sunset Vibes</div>
+              <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Mooca, SP</div>
+              <div class="meta-evento"><i class="bi bi-clock"></i> Em 30 min</div>
+            </div>
+            <span class="distancia-badge">3,4 km</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conteúdo: Line-up -->
+      <div id="conteudo-lineup" style="display:none;">
+        <div class="cabecalho-secao" style="padding-top:12px;">
+          <h3>Line-up de hoje</h3>
+          <span>São Paulo</span>
+        </div>
+        <div class="linha-tempo">
+
+          <div class="linha-tempo-item">
+            <div class="linha-tempo-hora-col"><span class="linha-tempo-hora">00:00</span></div>
+            <div class="linha-tempo-divisor"><div class="linha-tempo-ponto"></div><div class="linha-tempo-fio"></div></div>
+            <div class="linha-tempo-card" onclick="abrirEvento(5)">
+              <img class="linha-tempo-thumb" src="assets/images/sunset-vibes.jpg" alt="">
+              <div class="linha-tempo-info">
+                <div class="linha-tempo-nome">Sunset Vibes</div>
+                <div class="linha-tempo-artista">After Party — Julia Campos</div>
+                <div class="linha-tempo-local"><i class="bi bi-geo-alt-fill" style="font-size:10px;color:var(--roxo-claro);"></i> Mooca</div>
+              </div>
+              <span class="tag-em-breve">EM BREVE</span>
+            </div>
+          </div>
+
+          <div class="linha-tempo-item">
+            <div class="linha-tempo-hora-col"><span class="linha-tempo-hora">23:00</span></div>
+            <div class="linha-tempo-divisor"><div class="linha-tempo-ponto"></div><div class="linha-tempo-fio"></div></div>
+            <div class="linha-tempo-card" onclick="abrirEvento(4)">
+              <img class="linha-tempo-thumb" src="assets/images/electro-night.jpg" alt="">
+              <div class="linha-tempo-info">
+                <div class="linha-tempo-nome">Electro Night</div>
+                <div class="linha-tempo-artista">DJ Headliner — Gabriel Rocha</div>
+                <div class="linha-tempo-local"><i class="bi bi-geo-alt-fill" style="font-size:10px;color:var(--roxo-claro);"></i> Sé</div>
+              </div>
+              <span class="tag-em-breve">EM BREVE</span>
+            </div>
+          </div>
+
+          <div class="linha-tempo-item">
+            <div class="linha-tempo-hora-col"><span class="linha-tempo-hora">22:00</span></div>
+            <div class="linha-tempo-divisor"><div class="linha-tempo-ponto"></div><div class="linha-tempo-fio"></div></div>
+            <div class="linha-tempo-card" onclick="abrirEvento(3)">
+              <img class="linha-tempo-thumb" src="assets/images/vibes-sp.jpg" alt="">
+              <div class="linha-tempo-info">
+                <div class="linha-tempo-nome">Vibes São Paulo</div>
+                <div class="linha-tempo-artista">Electronic — DJ Bia Fernandes</div>
+                <div class="linha-tempo-local"><i class="bi bi-geo-alt-fill" style="font-size:10px;color:var(--roxo-claro);"></i> Liberdade</div>
+              </div>
+              <span class="tag-em-breve">EM BREVE</span>
+            </div>
+          </div>
+
+          <div class="linha-tempo-item">
+            <div class="linha-tempo-hora-col"><span class="linha-tempo-hora">21:30</span></div>
+            <div class="linha-tempo-divisor"><div class="linha-tempo-ponto"></div><div class="linha-tempo-fio"></div></div>
+            <div class="linha-tempo-card ao-vivo" onclick="abrirEvento(2)">
+              <img class="linha-tempo-thumb" src="assets/images/noite-inesquecivel.jpg" alt="">
+              <div class="linha-tempo-info">
+                <div class="linha-tempo-nome">Noite Inesquecível</div>
+                <div class="linha-tempo-artista">Rock ao Vivo — Banda Mosaico</div>
+                <div class="linha-tempo-local"><i class="bi bi-geo-alt-fill" style="font-size:10px;color:var(--roxo-claro);"></i> Consolação</div>
+              </div>
+              <span class="tag-ao-vivo">AO VIVO</span>
+            </div>
+          </div>
+
+          <div class="linha-tempo-item">
+            <div class="linha-tempo-hora-col"><span class="linha-tempo-hora">20:00</span></div>
+            <div class="linha-tempo-divisor"><div class="linha-tempo-ponto"></div><div class="linha-tempo-fio"></div></div>
+            <div class="linha-tempo-card ao-vivo" onclick="abrirEvento(1)">
+              <img class="linha-tempo-thumb" src="assets/images/festa-na-vila.jpg" alt="">
+              <div class="linha-tempo-info">
+                <div class="linha-tempo-nome">Festa na Vila</div>
+                <div class="linha-tempo-artista">DJ Lucas Vaz</div>
+                <div class="linha-tempo-local"><i class="bi bi-geo-alt-fill" style="font-size:10px;color:var(--roxo-claro);"></i> Bela Vista</div>
+              </div>
+              <span class="tag-ao-vivo">AO VIVO</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-inferior">
+      <button class="item-nav" onclick="irPara('tela-ranking')"><i class="bi bi-trophy"></i><span>Ranking</span></button>
+      <div class="cam-nav" onclick="irPara('tela-camera')"><i class="bi bi-camera"></i></div>
+      <button class="item-nav" onclick="irPara('tela-categorias')"><i class="bi bi-grid"></i><span>Categorias</span></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: CÂMERA
+  ══════════════════════════════ -->
+  <div id="tela-camera" class="tela">
+    <div class="barra-topo">
+      <div class="barra-topo-logo" onclick="irPara('tela-inicio')" style="cursor:pointer;">
+        <span class="logo-text"><span class="logo-jovi">JOVI</span><span class="logo-pulse">PULSE</span></span>
+        <svg class="logo-ecg" viewBox="0 0 40 20" fill="none"><polyline points="0,10 6,10 9,4 12,16 15,8 18,12 22,10 40,10" stroke="#9D6EF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="barra-topo-acoes">
+        <button class="btn-icone btn-notif" onclick="alternarNotificacoes(event)">
+          <i class="bi bi-bell" style="font-size:20px;"></i>
+          <span class="ponto-badge"></span>
+        </button>
+        <div class="chip-usuario">
+          <img src="https://i.pravatar.cc/60?img=47" alt="Mariana" />
+          <span>Mariana</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="corpo-tela">
+      <div class="cabecalho-pagina" style="padding-bottom:0;">
+        <div class="cabecalho-pagina-texto">
+          <h2>Compartilhe sua foto</h2>
+          <p>Mostre o que está rolando e conecte-se ao evento!</p>
+        </div>
+      </div>
+
+      <div class="area-camera" onclick="mostrarAviso('Câmera não disponível no browser — use a galeria!')">
+        <div class="dica-camera">
+          <strong>Sugestão</strong>
+          Fotos com boa luz e foco têm mais destaque!
+        </div>
+        <div class="btn-camera-circulo"><i class="bi bi-camera"></i></div>
+        <div class="rotulo-area-camera">
+          <strong>Toque para tirar uma foto</strong>
+          ou escolha da galeria
+        </div>
+        <div class="controles-camera">
+          <button class="btn-ctrl-camera" onclick="event.stopPropagation();mostrarAviso('Galeria aberta!')">
+            <i class="bi bi-images"></i><span>Selecionar da galeria</span>
+          </button>
+          <button class="btn-ctrl-camera" onclick="event.stopPropagation();mostrarAviso('Flash alternado!')">
+            <i class="bi bi-lightning-charge"></i><span>Flash Desligado</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="padding:4px 12px 10px;">
+        <p style="font-size:14px;font-weight:700;color:var(--texto-primario);margin-bottom:4px;">O que você quer fazer?</p>
+        <p style="font-size:12px;color:var(--texto-secundario);">Escolha como deseja compartilhar sua foto.</p>
+      </div>
+
+      <div class="cartoes-acao">
+        <div class="cartao-acao" onclick="irPara('tela-criar-evento')">
+          <div class="cartao-acao-icone"><i class="bi bi-plus-lg"></i></div>
+          <div class="cartao-acao-texto">
+            <div class="cartao-acao-titulo">Criar novo evento</div>
+            <div class="cartao-acao-sub">Crie um novo evento a partir desta foto e compartilhe com outras pessoas.</div>
+          </div>
+          <i class="bi bi-chevron-right" style="color:var(--texto-suave);"></i>
+        </div>
+        <div class="cartao-acao" onclick="irPara('tela-selecionar-evento')">
+          <div class="cartao-acao-icone" style="background:var(--roxo-escuro);"><i class="bi bi-search"></i></div>
+          <div class="cartao-acao-texto">
+            <div class="cartao-acao-titulo">Selecionar evento existente</div>
+            <div class="cartao-acao-sub">Associe esta foto a um evento que já está acontecendo.</div>
+          </div>
+          <i class="bi bi-chevron-right" style="color:var(--texto-suave);"></i>
+        </div>
+      </div>
+
+      <div class="cartao-dicas mt-12">
+        <div class="cartao-dicas-cabecalho"><i class="bi bi-lightbulb-fill"></i> Dicas para mais visibilidade</div>
+        <ul class="lista-dicas">
+          <li>Fotos nítidas e bem iluminadas atraem mais interações</li>
+          <li>Registre os melhores momentos do evento</li>
+          <li>Use ângulos diferentes para se destacar</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="nav-inferior">
+      <button class="item-nav" onclick="irPara('tela-ranking')"><i class="bi bi-trophy"></i><span>Ranking</span></button>
+      <div class="cam-nav" style="background:var(--roxo-escuro);" onclick="irPara('tela-camera')"><i class="bi bi-camera"></i></div>
+      <button class="item-nav" onclick="irPara('tela-categorias')"><i class="bi bi-grid"></i><span>Categorias</span></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: CRIAR EVENTO
+  ══════════════════════════════ -->
+  <div id="tela-criar-evento" class="tela">
+    <div class="barra-topo">
+      <button class="btn-voltar" onclick="irPara('tela-camera')"><i class="bi bi-arrow-left"></i></button>
+      <div onclick="irPara('tela-inicio')" style="cursor:pointer;flex:1;margin:0 8px;">
+        <div style="font-size:15px;font-weight:700;">Criar novo evento</div>
+        <div style="font-size:11px;color:var(--texto-secundario);">Conte para as pessoas sobre o seu evento!</div>
+      </div>
+      <div class="chip-usuario">
+        <img src="https://i.pravatar.cc/60?img=47" alt="Mariana" />
+      </div>
+    </div>
+
+    <div class="corpo-tela">
+      <div class="barra-etapas" style="padding:16px;">
+        <div class="item-etapa ativa" id="etapa-1">
+          <div class="num-etapa">1</div>
+          <div class="rotulo-etapa">Local</div>
+        </div>
+        <div class="item-etapa" id="etapa-2">
+          <div class="num-etapa">2</div>
+          <div class="rotulo-etapa">Detalhes</div>
+        </div>
+        <div class="item-etapa" id="etapa-3">
+          <div class="num-etapa">3</div>
+          <div class="rotulo-etapa">Foto</div>
+        </div>
+        <div class="item-etapa" id="etapa-4">
+          <div class="num-etapa">4</div>
+          <div class="rotulo-etapa">Revisão</div>
+        </div>
+      </div>
+
+      <div id="criar-etapa-1" class="secao-formulario">
+        <h3>Onde será seu evento?</h3>
+        <p>Informe o local para que as pessoas encontrem você.</p>
+        <div class="campo-entrada-escuro">
+          <i class="bi bi-geo-alt icone-campo"></i>
+          <input class="entrada-escura" type="text" placeholder="Busque por cidade, bairro ou local" id="busca-local" />
+        </div>
+        <div class="campo-sugestoes">
+          <span class="tag-sugestao" data-local="Bela Vista, São Paulo" onclick="selecionarLocal(this)"><i class="bi bi-geo-alt-fill"></i> Bela Vista, São Paulo</span>
+          <span class="tag-sugestao" data-local="Consolação, São Paulo" onclick="selecionarLocal(this)"><i class="bi bi-geo-alt-fill"></i> Consolação, São Paulo</span>
+          <span class="tag-sugestao" data-local="Vila Madalena, São Paulo" onclick="selecionarLocal(this)"><i class="bi bi-geo-alt-fill"></i> Vila Madalena</span>
+          <span class="tag-sugestao" data-local="Ibirapuera, São Paulo" onclick="selecionarLocal(this)"><i class="bi bi-geo-alt-fill"></i> Ibirapuera</span>
+          <span class="tag-sugestao" data-local="Mooca, São Paulo" onclick="selecionarLocal(this)"><i class="bi bi-geo-alt-fill"></i> Mooca</span>
+          <span class="tag-sugestao" data-local="Outros locais" onclick="selecionarLocal(this)"><i class="bi bi-geo-alt-fill"></i> Outros locais</span>
+        </div>
+        <div id="mapa-criar" class="mapa-pequeno"></div>
+        <div class="localizacao-confirmada">
+          <div class="localizacao-confirmada-esquerda">
+            <i class="bi bi-geo-alt-fill"></i>
+            <div>
+              <strong>Bela Vista, São Paulo - SP</strong>
+              <span onclick="mostrarAviso('Altere a localização no mapa')">Alterar localização</span>
+            </div>
+          </div>
+          <i class="bi bi-chevron-right" style="color:var(--texto-suave);"></i>
+        </div>
+      </div>
+
+      <div id="criar-etapa-2" class="secao-formulario" style="display:none;">
+        <h3>Detalhes do evento</h3>
+        <p>Adicione as informações principais.</p>
+        <input class="entrada-escura sem-icone" type="text" placeholder="Título do evento" style="margin-bottom:12px;" />
+        <textarea class="textarea-escuro" placeholder="Descrição do evento (opcional)"></textarea>
+        <p style="font-size:13px;font-weight:600;color:var(--texto-secundario);margin-bottom:10px;">Categoria</p>
+        <div class="grade-categoria">
+          <div class="opcao-categoria selecionada" onclick="selecionarCategoria(this)"><i class="bi bi-music-note-beamed"></i> Festivais</div>
+          <div class="opcao-categoria" onclick="selecionarCategoria(this)"><i class="bi bi-mic"></i> Stand Up</div>
+          <div class="opcao-categoria" onclick="selecionarCategoria(this)"><i class="bi bi-trophy"></i> Esporte</div>
+          <div class="opcao-categoria" onclick="selecionarCategoria(this)"><i class="bi bi-balloon"></i> Lazer</div>
+          <div class="opcao-categoria" onclick="selecionarCategoria(this)"><i class="bi bi-cup-hot"></i> Restaurante</div>
+          <div class="opcao-categoria" onclick="selecionarCategoria(this)"><i class="bi bi-three-dots"></i> Outro</div>
+        </div>
+        <div class="campo-entrada-escuro" style="margin-top:4px;">
+          <i class="bi bi-calendar icone-campo"></i>
+          <input class="entrada-escura" type="datetime-local" />
+        </div>
+      </div>
+
+      <div id="criar-etapa-3" class="secao-formulario" style="display:none;">
+        <h3>Foto do evento</h3>
+        <p>Adicione uma foto de capa para seu evento.</p>
+        <div class="area-envio" onclick="mostrarAviso('Selecione uma imagem da galeria!')">
+          <i class="bi bi-cloud-arrow-up"></i>
+          <span>Arraste ou clique para enviar</span>
+          <strong>JPG, PNG ou WEBP até 10MB</strong>
+        </div>
+      </div>
+
+      <div id="criar-etapa-4" class="secao-formulario" style="display:none;">
+        <h3>Revise seu evento</h3>
+        <p>Confira as informações antes de publicar.</p>
+        <div class="secao-revisao">
+          <div class="rotulo-revisao">Local</div>
+          <div class="valor-revisao">Bela Vista, São Paulo - SP</div>
+        </div>
+        <div class="secao-revisao">
+          <div class="rotulo-revisao">Título</div>
+          <div class="valor-revisao">Meu Evento Incrível</div>
+        </div>
+        <div class="secao-revisao">
+          <div class="rotulo-revisao">Categoria</div>
+          <div class="valor-revisao">Festivais</div>
+        </div>
+        <div class="secao-revisao">
+          <div class="rotulo-revisao">Data e hora</div>
+          <div class="valor-revisao">27 Jun 2026 · 21:00</div>
+        </div>
+      </div>
+
+      <div class="area-botoes">
+        <button class="btn-primario" id="botao-proxima-etapa" onclick="proximaEtapa()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="nav-inferior">
+      <button class="item-nav" onclick="irPara('tela-ranking')"><i class="bi bi-trophy"></i><span>Ranking</span></button>
+      <div class="cam-nav" onclick="irPara('tela-camera')"><i class="bi bi-camera"></i></div>
+      <button class="item-nav" onclick="irPara('tela-categorias')"><i class="bi bi-grid"></i><span>Categorias</span></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: SELECIONAR EVENTO
+  ══════════════════════════════ -->
+  <div id="tela-selecionar-evento" class="tela">
+    <div class="barra-topo">
+      <button class="btn-voltar" onclick="irPara('tela-camera')"><i class="bi bi-arrow-left"></i></button>
+      <div class="barra-topo-logo" onclick="irPara('tela-inicio')" style="cursor:pointer;">
+        <span class="logo-text"><span class="logo-jovi">JOVI</span><span class="logo-pulse">PULSE</span></span>
+        <svg class="logo-ecg" viewBox="0 0 40 20" fill="none"><polyline points="0,10 6,10 9,4 12,16 15,8 18,12 22,10 40,10" stroke="#9D6EF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="chip-usuario">
+        <img src="https://i.pravatar.cc/60?img=47" alt="" /><span>Mariana</span>
+      </div>
+    </div>
+
+    <div class="corpo-tela">
+      <div class="cabecalho-pagina">
+        <div class="cabecalho-pagina-texto">
+          <h2>Selecionar evento existente</h2>
+          <p>Escolha um evento para associar sua foto.</p>
+        </div>
+      </div>
+      <div class="barra-busca">
+        <div class="campo-busca">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Buscar por nome do evento, cidade ou organizador..." />
+        </div>
+        <button class="btn-filtro"><i class="bi bi-funnel"></i> Filtros</button>
+      </div>
+      <div class="cabecalho-secao" style="padding-top:4px;">
+        <h3>Eventos próximos de você</h3>
+      </div>
+      <div class="lista-eventos">
+        <div class="item-evento" onclick="abrirEvento(1)">
+          <div class="rank-evento ouro">1</div>
+          <img class="miniatura-evento" src="assets/images/festa-na-vila.jpg" alt="">
+          <div class="info-evento">
+            <div class="nome-evento">Festa na Vila</div>
+            <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Bela Vista, São Paulo - SP</div>
+            <div class="meta-evento"><i class="bi bi-broadcast"></i> AO VIVO · AGORA</div>
+          </div>
+          <button class="btn-borda" onclick="event.stopPropagation();mostrarAviso('Evento selecionado!')">Selecionar</button>
+        </div>
+        <div class="item-evento" onclick="abrirEvento(2)">
+          <div class="rank-evento prata">2</div>
+          <img class="miniatura-evento" src="assets/images/noite-inesquecivel.jpg" alt="">
+          <div class="info-evento">
+            <div class="nome-evento">Noite Inesquecível</div>
+            <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Consolação, São Paulo - SP</div>
+            <div class="meta-evento"><i class="bi bi-broadcast"></i> AO VIVO · AGORA</div>
+          </div>
+          <button class="btn-borda" onclick="event.stopPropagation();mostrarAviso('Evento selecionado!')">Selecionar</button>
+        </div>
+        <div class="item-evento" onclick="abrirEvento(3)">
+          <div class="rank-evento bronze">3</div>
+          <img class="miniatura-evento" src="assets/images/vibes-sp.jpg" alt="">
+          <div class="info-evento">
+            <div class="nome-evento">Vibes São Paulo</div>
+            <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Liberdade, São Paulo - SP</div>
+            <div class="meta-evento"><i class="bi bi-clock"></i> Em breve</div>
+          </div>
+          <button class="btn-borda" onclick="event.stopPropagation();mostrarAviso('Evento selecionado!')">Selecionar</button>
+        </div>
+        <div class="item-evento" onclick="abrirEvento(4)">
+          <div class="rank-evento">4</div>
+          <img class="miniatura-evento" src="assets/images/electro-night.jpg" alt="">
+          <div class="info-evento">
+            <div class="nome-evento">Electro Night</div>
+            <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Sé, São Paulo - SP</div>
+            <div class="meta-evento"><i class="bi bi-clock"></i> Em breve</div>
+          </div>
+          <button class="btn-borda" onclick="event.stopPropagation();mostrarAviso('Evento selecionado!')">Selecionar</button>
+        </div>
+        <div class="item-evento" onclick="abrirEvento(5)">
+          <div class="rank-evento">5</div>
+          <img class="miniatura-evento" src="assets/images/sunset-vibes.jpg" alt="">
+          <div class="info-evento">
+            <div class="nome-evento">Sunset Vibes</div>
+            <div class="local-evento"><i class="bi bi-geo-alt-fill"></i> Mooca, São Paulo - SP</div>
+            <div class="meta-evento"><i class="bi bi-clock"></i> Em 30 min</div>
+          </div>
+          <button class="btn-borda" onclick="event.stopPropagation();mostrarAviso('Evento selecionado!')">Selecionar</button>
+        </div>
+      </div>
+      <div class="cartao-sem-evento">
+        <div class="sem-evento-esquerda">
+          <i class="bi bi-calendar-x sem-evento-icone"></i>
+          <div class="sem-evento-texto">
+            <h4>Não encontrou seu evento?</h4>
+            <p>Verifique se o evento já foi criado ou crie um novo.</p>
+          </div>
+        </div>
+        <button class="btn-criar-pequeno" onclick="irPara('tela-criar-evento')"><i class="bi bi-plus-lg"></i> Criar novo evento</button>
+      </div>
+    </div>
+
+    <div class="nav-inferior">
+      <button class="item-nav" onclick="irPara('tela-ranking')"><i class="bi bi-trophy"></i><span>Ranking</span></button>
+      <div class="cam-nav" onclick="irPara('tela-camera')"><i class="bi bi-camera"></i></div>
+      <button class="item-nav" onclick="irPara('tela-categorias')"><i class="bi bi-grid"></i><span>Categorias</span></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: CATEGORIAS
+  ══════════════════════════════ -->
+  <div id="tela-categorias" class="tela">
+    <div class="barra-topo">
+      <div class="barra-topo-logo" onclick="irPara('tela-inicio')" style="cursor:pointer;">
+        <span class="logo-text"><span class="logo-jovi">JOVI</span><span class="logo-pulse">PULSE</span></span>
+        <svg class="logo-ecg" viewBox="0 0 40 20" fill="none"><polyline points="0,10 6,10 9,4 12,16 15,8 18,12 22,10 40,10" stroke="#9D6EF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="barra-topo-acoes">
+        <button class="btn-icone btn-notif" onclick="alternarNotificacoes(event)">
+          <i class="bi bi-bell" style="font-size:20px;"></i>
+          <span class="ponto-badge"></span>
+        </button>
+        <div class="chip-usuario">
+          <img src="https://i.pravatar.cc/60?img=47" alt="Mariana" />
+          <span>Mariana</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="corpo-tela">
+      <div class="cabecalho-pagina" style="padding-bottom:4px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;background:var(--roxo-primario);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <i class="bi bi-grid-fill" style="color:#fff;"></i>
+          </div>
+          <div>
+            <h2 style="font-size:20px;font-weight:700;">Categorias</h2>
+            <p style="font-size:12px;color:var(--texto-secundario);">Explore os eventos que estão acontecendo agora</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cabecalho-secao-vivo">
+        <div class="ponto-vivo"></div>
+        <span class="titulo-secao-vivo">AO VIVO AGORA</span>
+      </div>
+      <p class="sub-secao-vivo">Escolha uma categoria para ver os eventos em destaque</p>
+
+      <div class="grade-categorias">
+        <div class="cartao-categoria" onclick="mostrarAviso('Festivais — 67 eventos ao vivo!')">
+          <img src="assets/images/cat-festivais.jpg" alt="Festivais">
+          <div class="cartao-categoria-sobreposicao">
+            <div class="cartao-categoria-icone"><i class="bi bi-music-note-beamed"></i></div>
+            <div>
+              <div class="cartao-categoria-nome">Festivais</div>
+              <div class="cartao-categoria-contagem"><i class="bi bi-people-fill"></i> 67 eventos</div>
+            </div>
+          </div>
+        </div>
+        <div class="cartao-categoria" onclick="mostrarAviso('Stand Up — 45 eventos ao vivo!')">
+          <img src="assets/images/cat-standup.jpg" alt="Stand Up">
+          <div class="cartao-categoria-sobreposicao">
+            <div class="cartao-categoria-icone"><i class="bi bi-emoji-laughing"></i></div>
+            <div>
+              <div class="cartao-categoria-nome">Stand Up</div>
+              <div class="cartao-categoria-contagem"><i class="bi bi-people-fill"></i> 45 eventos</div>
+            </div>
+          </div>
+        </div>
+        <div class="cartao-categoria" onclick="mostrarAviso('Esporte — 72 eventos ao vivo!')">
+          <img src="assets/images/cat-esporte.jpg" alt="Esporte">
+          <div class="cartao-categoria-sobreposicao">
+            <div class="cartao-categoria-icone"><i class="bi bi-trophy-fill"></i></div>
+            <div>
+              <div class="cartao-categoria-nome">Esporte</div>
+              <div class="cartao-categoria-contagem"><i class="bi bi-people-fill"></i> 72 eventos</div>
+            </div>
+          </div>
+        </div>
+        <div class="cartao-categoria" onclick="mostrarAviso('Lazer — 58 eventos ao vivo!')">
+          <img src="assets/images/cat-lazer.jpg" alt="Lazer">
+          <div class="cartao-categoria-sobreposicao">
+            <div class="cartao-categoria-icone"><i class="bi bi-balloon-fill"></i></div>
+            <div>
+              <div class="cartao-categoria-nome">Lazer</div>
+              <div class="cartao-categoria-contagem"><i class="bi bi-people-fill"></i> 58 eventos</div>
+            </div>
+          </div>
+        </div>
+        <div class="cartao-categoria largo" onclick="mostrarAviso('Restaurantes — 36 eventos ao vivo!')">
+          <img src="assets/images/cat-restaurantes.jpg" alt="Restaurantes">
+          <div class="cartao-categoria-sobreposicao">
+            <div class="cartao-categoria-icone"><i class="bi bi-shop"></i></div>
+            <div>
+              <div class="cartao-categoria-nome">Restaurantes</div>
+              <div class="cartao-categoria-contagem"><i class="bi bi-people-fill"></i> 36 eventos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cartao-descobrir mt-12">
+        <div class="descobrir-esquerda">
+          <div class="descobrir-icone"><i class="bi bi-stars"></i></div>
+          <div class="descobrir-texto">
+            <h4>Descubra mais eventos</h4>
+            <p>Navegue no mapa e encontre eventos ao vivo perto de você!</p>
+          </div>
+        </div>
+        <button class="btn-mapa-pequeno" onclick="irPara('tela-inicio')"><i class="bi bi-map"></i> Ver no mapa</button>
+      </div>
+    </div>
+
+    <div class="nav-inferior">
+      <button class="item-nav" onclick="irPara('tela-ranking')"><i class="bi bi-trophy"></i><span>Ranking</span></button>
+      <div class="cam-nav" onclick="irPara('tela-camera')"><i class="bi bi-camera"></i></div>
+      <button class="item-nav ativa"><i class="bi bi-grid"></i><span>Categorias</span></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: RANKING
+  ══════════════════════════════ -->
+  <div id="tela-ranking" class="tela">
+    <div class="barra-topo">
+      <div class="barra-topo-logo" onclick="irPara('tela-inicio')" style="cursor:pointer;">
+        <span class="logo-text"><span class="logo-jovi">JOVI</span><span class="logo-pulse">PULSE</span></span>
+        <svg class="logo-ecg" viewBox="0 0 40 20" fill="none"><polyline points="0,10 6,10 9,4 12,16 15,8 18,12 22,10 40,10" stroke="#9D6EF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="barra-topo-acoes">
+        <button class="btn-icone btn-notif" onclick="alternarNotificacoes(event)">
+          <i class="bi bi-bell" style="font-size:20px;"></i>
+          <span class="ponto-badge"></span>
+        </button>
+        <div class="chip-usuario">
+          <img src="https://i.pravatar.cc/60?img=47" alt="Mariana" />
+          <span>Mariana</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="corpo-tela">
+      <div class="cabecalho-ranking">
+        <div class="icone-ranking"><i class="bi bi-trophy-fill"></i></div>
+        <div>
+          <h2>Ranking</h2>
+          <p>As fotos mais curtidas e vistas da última hora</p>
+        </div>
+      </div>
+      <div class="abas-alternar">
+        <button class="aba-alternar ativa" id="aba-curtidas" onclick="alternarAbaRanking('curtidas')"><i class="bi bi-heart-fill"></i> Mais curtidas</button>
+        <button class="aba-alternar" id="aba-vistas" onclick="alternarAbaRanking('vistas')"><i class="bi bi-eye-fill"></i> Mais vistas</button>
+      </div>
+      <div class="grade-ranking" id="lista-ranking"></div>
+    </div>
+
+    <div class="nav-inferior">
+      <button class="item-nav ativa"><i class="bi bi-trophy"></i><span>Ranking</span></button>
+      <div class="cam-nav" onclick="irPara('tela-camera')"><i class="bi bi-camera"></i></div>
+      <button class="item-nav" onclick="irPara('tela-categorias')"><i class="bi bi-grid"></i><span>Categorias</span></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TELA: COMENTÁRIOS
+  ══════════════════════════════ -->
+  <div id="tela-comentarios" class="tela">
+    <div class="barra-topo">
+      <button class="btn-voltar" onclick="irPara('tela-inicio')"><i class="bi bi-arrow-left"></i></button>
+      <div class="barra-topo-logo" onclick="irPara('tela-inicio')" style="cursor:pointer;">
+        <span class="logo-text"><span class="logo-jovi">JOVI</span><span class="logo-pulse">PULSE</span></span>
+        <svg class="logo-ecg" viewBox="0 0 40 20" fill="none"><polyline points="0,10 6,10 9,4 12,16 15,8 18,12 22,10 40,10" stroke="#9D6EF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="barra-topo-acoes">
+        <button class="btn-icone btn-notif" onclick="alternarNotificacoes(event)">
+          <i class="bi bi-bell" style="font-size:18px;"></i>
+        </button>
+        <div class="chip-usuario">
+          <img src="https://i.pravatar.cc/60?img=47" alt="Mariana" />
+          <span>Mariana</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="corpo-tela">
+      <div class="cabecalho-detalhe-evento">
+        <img class="miniatura-detalhe-evento" id="detalhe-thumb" src="" alt="">
+        <div class="info-detalhe-evento">
+          <div class="nome-detalhe-evento" id="detalhe-nome"></div>
+          <div class="local-detalhe-evento" id="detalhe-local"></div>
+          <div id="detalhe-badge" style="margin-top:4px;"></div>
+        </div>
+        <button class="btn-ver">Ver evento</button>
+      </div>
+
+      <div class="carrossel-fotos">
+        <img id="carrossel-foto" src="" alt="Foto do evento">
+        <div class="contador-fotos">1/8</div>
+      </div>
+
+      <div class="stats-fotos">
+        <div class="item-stat curtida" onclick="alternarCurtida(this)">
+          <i class="bi bi-heart-fill"></i>
+          <div class="num-stat" id="stat-curtidas-num"></div>
+          <div class="rotulo-stat">Curtidas</div>
+        </div>
+        <div class="item-stat comentarios">
+          <i class="bi bi-chat-dots"></i>
+          <div class="num-stat" id="stat-comentarios-num"></div>
+          <div class="rotulo-stat">Comentários</div>
+        </div>
+        <div class="item-stat visualizacoes">
+          <i class="bi bi-eye"></i>
+          <div class="num-stat" id="stat-vistas-num"></div>
+          <div class="rotulo-stat">Visualizações</div>
+        </div>
+        <div class="item-stat compartilhar" onclick="mostrarAviso('Link copiado!')">
+          <i class="bi bi-send"></i>
+          <div class="num-stat"></div>
+          <div class="rotulo-stat">Compartilhar</div>
+        </div>
+      </div>
+
+      <div class="curtido-por">
+        <div class="avatares-curtidas" id="liked-avatares"></div>
+        <span class="texto-curtido-por" id="liked-por-texto"></span>
+      </div>
+
+      <div class="area-legenda">
+        <span class="autor" id="legenda-autor"></span>
+        <span class="texto-legenda" id="legenda-texto"></span>
+        <a class="ver-todos" id="ver-todos-link"></a>
+        <span class="tempo-atras">Agora</span>
+      </div>
+
+      <div class="secao-comentarios">
+        <div class="cabecalho-comentarios">
+          <span class="titulo-comentarios">Comentários</span>
+          <button class="btn-ordenar">Mais recentes <i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div id="lista-comentarios-evento"></div>
+      </div>
+    </div>
+
+    <div class="barra-entrada-comentario">
+      <img src="https://i.pravatar.cc/60?img=47" alt="Mariana">
+      <input type="text" placeholder="Adicione um comentário..." id="entrada-comentario" />
+      <button class="btn-publicar" onclick="publicarComentario()">Publicar</button>
+    </div>
+  </div>
+
+  <div class="aviso-flutuante" id="aviso"></div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
